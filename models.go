@@ -4,6 +4,7 @@ type RemotionOptions struct {
 	ServeUrl                       string                 `json:"serveUrl" validate:"required"`
 	FunctionName                   string                 `json:"functionName" validate:"required"`
 	RendererFunctionName           string                 `json:"rendererFunctionName"`
+	MediaType                      string                 `json:"mediaType" validate:"required"`
 	Region                         string                 `json:"region" validate:"required"`
 	InputProps                     interface{}            `json:"inputProps"`
 	Composition                    string                 `json:"composition" validate:"required"`

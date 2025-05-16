@@ -7,8 +7,9 @@ import (
 )
 
 func constructRenderInternals(options *RemotionOptions) (*renderInternalOptions, error) {
+	log.Println("constructRenderInternals PIPIPIPOOPOPOPOPOP", options.MediaType)
 
-	inputProps, serializeError := serializeInputProps(options.InputProps, options.Region, "video-or-audio", options.ForceBucketName)
+	inputProps, serializeError := serializeInputProps(options.InputProps, options.Region, options.MediaType, options.ForceBucketName)
 
 	if serializeError != nil {
 		log.Fatal("Error in serializing input props", serializeError)

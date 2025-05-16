@@ -39,6 +39,8 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 		Payload:      internalParamJsonObject,
 	}
 
+	log.Printf("Invocation payload: %v", invocationPayload)
+
 	// Invoke Lambda function
 	invocationResult, invocationError := svc.Invoke(invocationPayload)
 

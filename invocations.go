@@ -22,6 +22,8 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 
 	internalParams, validateError := constructRenderInternals(&options)
 
+	log.Printf("Internal params: %v", internalParams)
+
 	if validateError != nil {
 		log.Printf("Error validating options: %v", validateError)
 		return nil, validateError

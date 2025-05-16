@@ -2,6 +2,7 @@ package lambda_go_sdk
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -40,7 +41,14 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 	invocationResult, invocationError := svc.Invoke(invocationPayload)
 
 	if invocationError != nil {
+		log.Printf("Error invoking Lambda function %s: %v", options.FunctionName, invocationError)
 		return nil, invocationError
+	}
+
+	// Log the raw payload and any function error
+	log.Printf("Raw payload from Lambda %s: %s", options.FunctionName, string(invocationResult.Payload))
+	if invocationResult.FunctionError != nil {
+		log.Printf("Lambda function %s executed with error: %s. Payload: %s", options.FunctionName, *invocationResult.FunctionError, string(invocationResult.Payload))
 	}
 
 	// Unmarshal response from Lambda function
@@ -87,7 +95,14 @@ func invokeRenderProgressLambda(config RenderConfig) (*RenderProgress, error) {
 	invokeResult, invokeError := svc.Invoke(invocationParams)
 
 	if invokeError != nil {
+		log.Printf("Error invoking Lambda function %s: %v", config.FunctionName, invokeError)
 		return nil, invokeError
+	}
+
+	// Log the raw payload and any function error
+	log.Printf("Raw payload from Lambda %s: %s", config.FunctionName, string(invokeResult.Payload))
+	if invokeResult.FunctionError != nil {
+		log.Printf("Lambda function %s executed with error: %s. Payload: %s", config.FunctionName, *invokeResult.FunctionError, string(invokeResult.Payload))
 	}
 
 	// Unmarshal response from Lambda function

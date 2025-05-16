@@ -33,6 +33,7 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 		log.Printf("Error marshalling internal params: %v", marshallingError)
 		return nil, marshallingError
 	}
+	log.Printf("Invocation payload: %v", internalParamJsonObject)
 
 	invocationPayload := &lambda.InvokeInput{
 		FunctionName: aws.String(options.FunctionName),

@@ -59,6 +59,8 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 	responseMarshallingError := json.Unmarshal(invocationResult.Payload, &renderResponseOutput)
 
 	if responseMarshallingError != nil {
+		log.Printf("Error unmarshalling response: %v", responseMarshallingError)
+		log.Printf("Payload: %s", string(invocationResult.Payload))
 		return nil, responseMarshallingError
 	}
 

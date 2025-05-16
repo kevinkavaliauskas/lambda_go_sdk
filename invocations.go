@@ -42,6 +42,8 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 	// Invoke Lambda function
 	invocationResult, invocationError := svc.Invoke(invocationPayload)
 
+	log.Printf("Invocation result: %v", invocationResult)
+
 	if invocationError != nil {
 		log.Printf("Error invoking Lambda function %s: %v", options.FunctionName, invocationError)
 		return nil, invocationError

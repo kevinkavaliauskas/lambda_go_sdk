@@ -23,12 +23,14 @@ func invokeRenderLambda(options RemotionOptions) (*RemotionRenderResponse, error
 	internalParams, validateError := constructRenderInternals(&options)
 
 	if validateError != nil {
+		log.Printf("Error validating options: %v", validateError)
 		return nil, validateError
 	}
 
 	internalParamJsonObject, marshallingError := json.Marshal(internalParams)
 	if marshallingError != nil {
 
+		log.Printf("Error marshalling internal params: %v", marshallingError)
 		return nil, marshallingError
 	}
 

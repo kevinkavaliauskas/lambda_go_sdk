@@ -7,7 +7,3 @@ func RenderMediaOnLambda(input RemotionOptions) (*RemotionRenderResponse, error)
 func GetRenderProgress(input RenderConfig) (*RenderProgress, error) {
 	return invokeRenderProgressLambda(input)
 }
-
-func RenderStillOnLambda(input RemotionStillOptions) (*RemotionStillRenderResponse, error) {
-	return invokeRenderStillLambda(input)
-}

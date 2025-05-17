@@ -208,3 +208,80 @@ type PayloadData struct {
 	Type    string `json:"type"`
 	Payload string `json:"payload"`
 }
+
+// ADDED: Options for rendering a still image
+// I define RemotionStillOptions similar to RemotionOptions but tailored for still renders.
+type RemotionStillOptions struct {
+	ServeUrl                       string                 `json:"serveUrl" validate:"required"`
+	FunctionName                   string                 `json:"functionName" validate:"required"`
+	Region                         string                 `json:"region" validate:"required"`
+	InputProps                     interface{}            `json:"inputProps"`
+	Composition                    string                 `json:"composition" validate:"required"`
+	ImageFormat                    string                 `json:"imageFormat"`
+	Privacy                        string                 `json:"privacy"`
+	LogLevel                       string                 `json:"logLevel"`
+	Frame                          int                    `json:"frame"`
+	Attempt                        int                    `json:"attempt"`
+	JpegQuality                    int                    `json:"jpegQuality"`
+	MaxRetries                     int                    `json:"maxRetries"`
+	EnvVariables                   interface{}            `json:"envVariables"`
+	OutName                        interface{}            `json:"outName"`
+	TimeoutInMilliseconds          int                    `json:"timeoutInMilliseconds"`
+	ChromiumOptions                interface{}            `json:"chromiumOptions"`
+	Scale                          float64                `json:"scale"`
+	DownloadBehavior               map[string]interface{} `json:"downloadBehavior"`
+	ForceWidth                     interface{}            `json:"forceWidth"`
+	ForceHeight                    interface{}            `json:"forceHeight"`
+	ForceBucketName                string                 `json:"forceBucketName"`
+	DeleteAfter                    *string                `json:"deleteAfter"`
+	StorageClass                   interface{}            `json:"storageClass"`
+	ApiKey                         interface{}            `json:"apiKey"`
+	OffthreadVideoCacheSizeInBytes interface{}            `json:"offthreadVideoCacheSizeInBytes"`
+	OffthreadVideoThreads          interface{}            `json:"offthreadVideoThreads"`
+	Streamed                       bool                   `json:"streamed"`
+	ForcePathStyle                 bool                   `json:"forcePathStyle"`
+}
+
+// Internal representation of still render params sent to Lambda
+
+type renderStillInternalOptions struct {
+	Type                           string                 `json:"type"`
+	Composition                    string                 `json:"composition" validate:"required"`
+	ServeUrl                       string                 `json:"serveUrl" validate:"required"`
+	InputProps                     interface{}            `json:"inputProps"`
+	ImageFormat                    string                 `json:"imageFormat"`
+	Privacy                        string                 `json:"privacy"`
+	Version                        string                 `json:"version"`
+	TimeoutInMilliseconds          int                    `json:"timeoutInMilliseconds"`
+	MaxRetries                     int                    `json:"maxRetries"`
+	EnvVariables                   interface{}            `json:"envVariables"`
+	JpegQuality                    int                    `json:"jpegQuality"`
+	StorageClass                   interface{}            `json:"storageClass"`
+	Frame                          int                    `json:"frame"`
+	LogLevel                       string                 `json:"logLevel"`
+	OutName                        interface{}            `json:"outName"`
+	ChromiumOptions                interface{}            `json:"chromiumOptions"`
+	Scale                          float64                `json:"scale"`
+	DownloadBehavior               map[string]interface{} `json:"downloadBehavior"`
+	ForceWidth                     interface{}            `json:"forceWidth"`
+	ApiKey                         interface{}            `json:"apiKey"`
+	ForceHeight                    interface{}            `json:"forceHeight"`
+	ForceBucketName                string                 `json:"forceBucketName"`
+	DeleteAfter                    *string                `json:"deleteAfter"`
+	Attempt                        int                    `json:"attempt"`
+	OffthreadVideoCacheSizeInBytes interface{}            `json:"offthreadVideoCacheSizeInBytes"`
+	OffthreadVideoThreads          interface{}            `json:"offthreadVideoThreads"`
+	Streamed                       bool                   `json:"streamed"`
+	ForcePathStyle                 bool                   `json:"forcePathStyle"`
+}
+
+// Response struct for still render request
+
+type RemotionStillRenderResponse struct {
+	EstimatedPrice Costs  `json:"estimatedPrice"`
+	Url            string `json:"output"`
+	SizeInBytes    int    `json:"sizeInBytes"`
+	BucketName     string `json:"bucketName"`
+	RenderId       string `json:"renderId"`
+	OutKey         string `json:"outKey"`
+}

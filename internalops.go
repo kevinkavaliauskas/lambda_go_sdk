@@ -182,3 +182,105 @@ func constructGetProgressInternals(options *RenderConfig) (*renderProgressIntern
 
 	return &internalParams, nil
 }
+
+func constructStillInternals(options *RemotionStillOptions) (*renderStillInternalOptions, error) {
+	validate := validator.New()
+	validationErrors := validate.Struct(options)
+	if validationErrors != nil {
+		return nil, validationErrors
+	}
+
+	// Serialize input props
+	inputProps, serializeError := serializeInputProps(options.InputProps, options.Region, "still", options.ForceBucketName)
+	if serializeError != nil {
+		log.Fatal("Error in serializing input props", serializeError)
+	}
+
+	// Defaults
+	jpegQuality := 80
+	if options.JpegQuality != 0 {
+		jpegQuality = options.JpegQuality
+	}
+
+	maxRetries := 1
+	if options.MaxRetries != 0 {
+		maxRetries = options.MaxRetries
+	}
+
+	logLevel := "info"
+	if options.LogLevel != "" {
+		logLevel = options.LogLevel
+	}
+
+	timeout := 30000
+	if options.TimeoutInMilliseconds != 0 {
+		timeout = options.TimeoutInMilliseconds
+	}
+
+	scale := 1.0
+	if options.Scale != 0 {
+		scale = options.Scale
+	}
+
+	attempt := 1
+	if options.Attempt != 0 {
+		attempt = options.Attempt
+	}
+
+	downloadBehavior := options.DownloadBehavior
+	if downloadBehavior == nil {
+		downloadBehavior = map[string]interface{}{"type": "play-in-browser"}
+	}
+
+	chromiumOptions := options.ChromiumOptions
+	if chromiumOptions == nil {
+		chromiumOptions = map[string]interface{}{}
+	}
+
+	envVariables := options.EnvVariables
+	if envVariables == nil {
+		envVariables = map[string]interface{}{}
+	}
+
+	internal := renderStillInternalOptions{
+		Type:                           "still",
+		Composition:                    options.Composition,
+		ServeUrl:                       options.ServeUrl,
+		InputProps:                     inputProps,
+		ImageFormat:                    options.ImageFormat,
+		Privacy:                        options.Privacy,
+		Version:                        VERSION,
+		TimeoutInMilliseconds:          timeout,
+		MaxRetries:                     maxRetries,
+		EnvVariables:                   envVariables,
+		JpegQuality:                    jpegQuality,
+		StorageClass:                   options.StorageClass,
+		Frame:                          options.Frame,
+		LogLevel:                       logLevel,
+		OutName:                        options.OutName,
+		ChromiumOptions:                chromiumOptions,
+		Scale:                          scale,
+		DownloadBehavior:               downloadBehavior,
+		ForceWidth:                     options.ForceWidth,
+		ApiKey:                         options.ApiKey,
+		ForceHeight:                    options.ForceHeight,
+		ForceBucketName:                options.ForceBucketName,
+		DeleteAfter:                    options.DeleteAfter,
+		Attempt:                        attempt,
+		OffthreadVideoCacheSizeInBytes: options.OffthreadVideoCacheSizeInBytes,
+		OffthreadVideoThreads:          options.OffthreadVideoThreads,
+		Streamed:                       options.Streamed,
+		ForcePathStyle:                 options.ForcePathStyle,
+	}
+
+	// Default imageFormat
+	if internal.ImageFormat == "" {
+		internal.ImageFormat = "jpeg"
+	}
+
+	if internal.Privacy == "" {
+		internal.Privacy = "public"
+	}
+
+	return &internal, nil
+}

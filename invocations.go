@@ -126,3 +126,59 @@ func invokeRenderProgressLambda(config RenderConfig) (*RenderProgress, error) {
 
 	return &renderProgressOutput, nil
 }
+
+func invokeRenderStillLambda(options RemotionStillOptions) (*RemotionStillRenderResponse, error) {
+
+	// Create a new AWS session
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		Config:            aws.Config{Region: aws.String(options.Region)},
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	// Create a new Lambda client
+	svc := lambda.New(sess)
+
+	internalParams, validateError := constructStillInternals(&options)
+
+	if validateError != nil {
+		log.Printf("Error validating options: %v", validateError)
+		return nil, validateError
+	}
+
+	internalParamJsonObject, marshallingError := json.Marshal(internalParams)
+	if marshallingError != nil {
+		log.Printf("Error marshalling internal params: %v", marshallingError)
+		return nil, marshallingError
+	}
+
+	invocationPayload := &lambda.InvokeInput{
+		FunctionName: aws.String(options.FunctionName),
+		Payload:      internalParamJsonObject,
+	}
+
+	// Invoke Lambda function
+	invocationResult, invocationError := svc.Invoke(invocationPayload)
+
+	if invocationError != nil {
+		log.Printf("Error invoking Lambda function %s: %v", options.FunctionName, invocationError)
+		return nil, invocationError
+	}
+
+	// Log the raw payload and any function error
+	log.Printf("Raw payload from Lambda %s: %s", options.FunctionName, string(invocationResult.Payload))
+	if invocationResult.FunctionError != nil {
+		log.Printf("Lambda function %s executed with error: %s. Payload: %s", options.FunctionName, *invocationResult.FunctionError, string(invocationResult.Payload))
+	}
+
+	// Unmarshal response from Lambda function
+	var renderResponseOutput RemotionStillRenderResponse
+
+	responseMarshallingError := json.Unmarshal(invocationResult.Payload, &renderResponseOutput)
+	if responseMarshallingError != nil {
+		log.Printf("Error unmarshalling response: %v", responseMarshallingError)
+		log.Printf("Payload: %s", string(invocationResult.Payload))
+		return nil, responseMarshallingError
+	}
+
+	return &renderResponseOutput, nil
+}

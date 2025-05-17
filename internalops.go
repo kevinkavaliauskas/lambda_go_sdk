@@ -47,8 +47,13 @@ func constructRenderInternals(options *RemotionOptions) (*renderInternalOptions,
 		ForceBucketName:                options.ForceBucketName,
 		RendererFunctionName:           &options.RendererFunctionName,
 		DeleteAfter:                    options.DeleteAfter,
-		Type:                           "start",
-		JpegQuality:                    jpegQuality,
+		Type: func() string {
+			if options.MediaType == "still" {
+				return "still"
+			}
+			return "start"
+		}(),
+		JpegQuality: jpegQuality,
 	}
 
 	internalParams.Muted = options.Muted
